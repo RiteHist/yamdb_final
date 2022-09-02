@@ -5,11 +5,12 @@ from rest_framework import filters, mixins, viewsets
 from rest_framework.pagination import PageNumberPagination
 from reviews.models import Category, Genre, Review, Title
 from users.permissions import IsAdminOrReadOnly
+
 from api.filters import TitleFilter
 from api.permissions import AnonReadOnlyOrOwnerAdminModerator
-from api.serializers import (CategorySerializer, GenreSerializer,
+from api.serializers import (CategorySerializer, CommentsSerializer,
+                             GenreSerializer, ReviewSerializer,
                              TitleGetSerializer, TitleSerializer)
-from api.serializers import CommentsSerializer, ReviewSerializer
 
 
 class CreateListDestroyViewSet(
@@ -60,8 +61,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
-        new_queryset = title.reviews.all()
-        return new_queryset
+        return title.reviews.all()
 
     def perform_create(self, serializer):
         title_id = self.kwargs.get('title_id')
@@ -78,8 +78,7 @@ class CommentsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         review_id = self.kwargs.get('review_id')
         review = get_object_or_404(Review, pk=review_id)
-        new_queryset = review.comments.all()
-        return new_queryset
+        return review.comments.all()
 
     def perform_create(self, serializer):
         review_id = self.kwargs.get('review_id')
